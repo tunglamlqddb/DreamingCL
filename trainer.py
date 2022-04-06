@@ -115,6 +115,7 @@ class Trainer:
                         'deep_inv_params': args.deep_inv_params,
                         'tasks': self.tasks_logits,
                         'top_k': self.top_k,
+                        'ReBN': args.ReBN,
                         }
         self.learner_type, self.learner_name = args.learner_type, args.learner_name
         self.learner = learners.__dict__[self.learner_type].__dict__[self.learner_name](self.learner_config)

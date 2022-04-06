@@ -27,6 +27,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
 
+from norm_layer import ReBN 
+
 __all__ = ['ResNet','resnet32']
 
 def _weights_init(m):
@@ -45,12 +47,21 @@ class LambdaLayer(nn.Module):
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, in_planes, planes, stride=1, option='A'):
+    def __init__(self, in_planes, planes, stride=1, option='A', ReBN=False):
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
+
+        if ReBN:
+            self.bn1 = ReBN(planes)
+        else:
+            self.bn1 = nn.BatchNorm2d(planes)
+
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
+
+        if ReBN:
+            self.bn2 = ReBN(planes)
+        else:
+            self.bn2 = nn.BatchNorm2d(planes)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != planes:
@@ -62,8 +73,8 @@ class BasicBlock(nn.Module):
                                             F.pad(x[:, :, ::2, ::2], (0, 0, 0, 0, planes//4, planes//4), "constant", 0))
             elif option == 'B':
                 self.shortcut = nn.Sequential(
-                     nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
-                     nn.BatchNorm2d(self.expansion * planes)
+                    nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False), 
+                    ReBN(self.expansion * planes) if ReBN else nn.BatchNorm2d(self.expansion * planes),
                 )
 
     def forward(self, x):
@@ -74,12 +85,16 @@ class BasicBlock(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, num_classes=10, ReBN=False):
         super(ResNet, self).__init__()
         self.in_planes = 16
+        self.ReBN = ReBN
 
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(16)
+        if ReBN:
+            self.bn1 = ReBN(16)
+        else:
+            self.bn1 = nn.BatchNorm2d(16)
         self.layer1 = self._make_layer(block, 16, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 32, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 64, num_blocks[2], stride=2)
@@ -91,7 +106,7 @@ class ResNet(nn.Module):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
         for stride in strides:
-            layers.append(block(self.in_planes, planes, stride))
+            layers.append(block(self.in_planes, planes, stride, ReBN=self.ReBN))
             self.in_planes = planes * block.expansion
 
         return nn.Sequential(*layers)
@@ -109,8 +124,8 @@ class ResNet(nn.Module):
             out = self.last(out)
             return out
 
-def resnet32(out_dim):
-    return ResNet(BasicBlock, [5, 5, 5], num_classes=out_dim)
+def resnet32(out_dim, ReBN=False):
+    return ResNet(BasicBlock, [5, 5, 5], num_classes=out_dim, ReBN=ReBN)
 
 class BiasLayer(nn.Module):
     def __init__(self):
@@ -123,3 +138,4 @@ class BiasLayer(nn.Module):
     
     def printParam(self, i):
         print(i, self.alpha.item(), self.beta.item())
+
