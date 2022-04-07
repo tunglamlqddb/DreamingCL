@@ -1,3 +1,4 @@
+from models.norm_layer import ReBN
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -57,7 +58,7 @@ class Teacher(nn.Module):
         # Create hooks for feature statistics catching
         loss_r_feature_layers = []
         for module in self.solver.modules():
-            if isinstance(module, nn.BatchNorm2d) or isinstance(module, nn.BatchNorm1d):
+            if isinstance(module, nn.BatchNorm2d) or isinstance(module, nn.BatchNorm1d) or isinstance(module, ReBN):
                 loss_r_feature_layers.append(DeepInversionFeatureHook(module, 0, self.r_feature_weight))
         self.loss_r_feature_layers = loss_r_feature_layers
 
@@ -71,7 +72,9 @@ class Teacher(nn.Module):
         self.generator.train()
         if self.first_time:
             self.first_time = False
+            print('Start training the generator!')
             self.get_images(bs=size, epochs=self.iters, idx=-1)
+            print('Finish training the generator!')
         
         # sample images
         self.generator.eval()
