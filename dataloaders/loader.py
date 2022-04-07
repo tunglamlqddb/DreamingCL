@@ -493,7 +493,7 @@ class iCIFAR10(iDataset):
             print('Files already downloaded and verified')
             return
 
-        # download_url(self.url, self.root, self.filename, self.tgz_md5)
+        download_url(self.url, self.root, self.filename, self.tgz_md5)
 
         # extract file
         with tarfile.open(os.path.join(self.root, self.filename), "r:gz") as tar:
@@ -525,8 +525,8 @@ class iCIFAR100(iCIFAR10):
     """`CIFAR100 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
     This is a subclass of the iCIFAR10 Dataset.
     """
-    # base_folder = 'cifar-100-python'
-    base_folder = '/content/drive/MyDrive/cifar-100-python'
+    base_folder = 'data/cifar-100-python'
+    # base_folder = '/content/drive/MyDrive/cifar-100-python'
     url = "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
     filename = "cifar-100-python.tar.gz"
     tgz_md5 = 'eb9058c3a382ffc7106e4002c42a8d85'
