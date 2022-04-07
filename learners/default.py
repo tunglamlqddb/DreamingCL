@@ -335,7 +335,7 @@ class NormalNN(nn.Module):
 
         return optimizer, scheduler
 
-    def create_model(self, ReBN):
+    def create_model(self):
         cfg = self.config
 
         # Define the backbone (MLP, LeNet, VGG, ResNet ... etc) of model

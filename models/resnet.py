@@ -27,7 +27,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
 
-from norm_layer import ReBN 
+from models.norm_layer import ReBN as ReBN2d
 
 __all__ = ['ResNet','resnet32']
 
@@ -52,14 +52,14 @@ class BasicBlock(nn.Module):
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
 
         if ReBN:
-            self.bn1 = ReBN(planes)
+            self.bn1 = ReBN2d(planes)
         else:
             self.bn1 = nn.BatchNorm2d(planes)
 
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
 
         if ReBN:
-            self.bn2 = ReBN(planes)
+            self.bn2 = ReBN2d(planes)
         else:
             self.bn2 = nn.BatchNorm2d(planes)
 
@@ -74,7 +74,7 @@ class BasicBlock(nn.Module):
             elif option == 'B':
                 self.shortcut = nn.Sequential(
                     nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False), 
-                    ReBN(self.expansion * planes) if ReBN else nn.BatchNorm2d(self.expansion * planes),
+                    ReBN2d(self.expansion * planes) if ReBN else nn.BatchNorm2d(self.expansion * planes),
                 )
 
     def forward(self, x):
@@ -92,7 +92,7 @@ class ResNet(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1, bias=False)
         if ReBN:
-            self.bn1 = ReBN(16)
+            self.bn1 = ReBN2d(16)
         else:
             self.bn1 = nn.BatchNorm2d(16)
         self.layer1 = self._make_layer(block, 16, num_blocks[0], stride=1)
