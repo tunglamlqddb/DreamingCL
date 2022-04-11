@@ -525,7 +525,7 @@ class iCIFAR100(iCIFAR10):
     """`CIFAR100 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
     This is a subclass of the iCIFAR10 Dataset.
     """
-    base_folder = '/data/cifar-100-python'
+    base_folder = '../data/cifar-100-python'
     # base_folder = '/content/drive/MyDrive/cifar-100-python'
     url = "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
     filename = "cifar-100-python.tar.gz"
