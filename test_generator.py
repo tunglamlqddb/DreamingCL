@@ -233,6 +233,7 @@ if __name__ == '__main__':
 
     # New model     
     model = models.__dict__[args.model_type].__dict__[args.model_name](out_dim=num_classes, ReBN=args.ReBN)
+    model = model.cuda()
 
     # Train
     train_dataset.load_dataset(args.task_id-1, train=True)
