@@ -13,7 +13,7 @@ from utils.metric import accuracy, AverageMeter, Timer
 python -u test_generator.py --gpuid 0 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
                             --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
                             --schedule 30 50 80 100 --schedule_type decay --batch_size 128 \
-                            --seed 0 --train_aug
+                            --seed 0 --train_aug --model_type resnet --model_name resnet32
 '''
 
 def create_args():    
@@ -27,6 +27,8 @@ def create_args():
     parser.add_argument('--other_split_size', type=int, default=20)   
     parser.add_argument('--gen_model_type', type=str, default='mlp', help="The type (mlp|lenet|vgg|resnet) of generator network")
     parser.add_argument('--gen_model_name', type=str, default='MLP', help="The name of actual model for the generator")
+    parser.add_argument('--model_type', type=str, default='mlp', help="The type (mlp|lenet|vgg|resnet) of backbone network")
+    parser.add_argument('--model_name', type=str, default='MLP', help="The name of actual model for the backbone")
     parser.add_argument('--task_id', type=int, default=1)
     parser.add_argument('--repeat_id', type=int, default=1)
     parser.add_argument('--train_aug', dest='train_aug', default=False, action='store_true',
@@ -220,13 +222,13 @@ if __name__ == '__main__':
     # Generator
     generator = models.__dict__[args.gen_model_type].__dict__[args.gen_model_name]()
     load_model(generator,  saved_models_folder + '/generator.pth')
-    print('Generator')
+    print('Generator: ', sum(p.numel() for p in generator.parameters()))
     print(generator)
 
     # Pretrained model
     pretrained_model = models.__dict__[args.model_type].__dict__[args.model_name](out_dim=num_classes, ReBN=args.ReBN)
     load_model(pretrained_model, saved_models_folder + '/class.pth')
-    print('Model')
+    print('Model:', sum(p.numel() for p in pretrained_model.parameters()))
     print(pretrained_model)
 
     # New model     
