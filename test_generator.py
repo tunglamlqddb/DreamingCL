@@ -13,7 +13,7 @@ from utils.metric import accuracy, AverageMeter, Timer
 python -u test_generator.py --gpuid 0 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
                             --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
                             --schedule 30 50 80 100 --schedule_type decay --batch_size 128 \
-                            --seed 0 
+                            --seed 0 --train_aug
 '''
 
 def create_args():    
@@ -29,6 +29,8 @@ def create_args():
     parser.add_argument('--gen_model_name', type=str, default='MLP', help="The name of actual model for the generator")
     parser.add_argument('--task_id', type=int, default=1)
     parser.add_argument('--repeat_id', type=int, default=1)
+    parser.add_argument('--train_aug', dest='train_aug', default=False, action='store_true',
+                        help="Allow data augmentation during training")
     
     parser.add_argument('--dataset', type=str, default='MNIST', help="CIFAR10|MNIST")
     parser.add_argument('--optimizer', type=str, default='SGD', help="SGD|Adam|RMSprop|amsgrad|Adadelta|Adagrad|Adamax ...")
