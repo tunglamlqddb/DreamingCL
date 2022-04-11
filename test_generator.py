@@ -9,7 +9,12 @@ import models, dataloaders
 from torch.utils.data import DataLoader
 from utils.metric import accuracy, AverageMeter, Timer
 
-
+'''
+python -u test_generator.py --gpuid 0 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
+                            --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
+                            --schedule 30 50 80 100 --schedule_type decay --batch_size 128 \
+                            --seed 0 
+'''
 
 def create_args():    
     parser = argparse.ArgumentParser()
@@ -24,8 +29,6 @@ def create_args():
     parser.add_argument('--gen_model_name', type=str, default='MLP', help="The name of actual model for the generator")
     parser.add_argument('--task_id', type=int, default=1)
     parser.add_argument('--repeat_id', type=int, default=1)
-    parser.add_argument('--gen_saved_at', type=str, default="outputs/generator.pth",
-                         help="Path to saved generator")
     
     parser.add_argument('--dataset', type=str, default='MNIST', help="CIFAR10|MNIST")
     parser.add_argument('--optimizer', type=str, default='SGD', help="SGD|Adam|RMSprop|amsgrad|Adadelta|Adagrad|Adamax ...")
@@ -183,14 +186,13 @@ if __name__ == '__main__':
         num_classes = 100
         dataset_size = [32,32,3]
     class_order = np.arange(num_classes).tolist()
-    if args.rand_split:
-        print('=============================================')
-        print('Shuffling....')
-        print('pre-shuffle:' + str(class_order))
-        random.seed(seed)
-        random.shuffle(class_order)
-        print('post-shuffle:' + str(class_order))
-        print('=============================================')
+    print('=============================================')
+    print('Shuffling....')
+    print('pre-shuffle:' + str(class_order))
+    random.seed(seed)
+    random.shuffle(class_order)
+    print('post-shuffle:' + str(class_order))
+    print('=============================================')
     tasks = []
     p = 0
     while p < num_classes:
