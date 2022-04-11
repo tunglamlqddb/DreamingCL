@@ -219,13 +219,13 @@ if __name__ == '__main__':
 
     # Generator
     generator = models.__dict__[args.gen_model_type].__dict__[args.gen_model_name]()
-    generator= load_model(saved_models_folder + '/generator.pth')
+    load_model(generator,  saved_models_folder + '/generator.pth')
     print('Generator')
     print(generator)
 
     # Pretrained model
     pretrained_model = models.__dict__[args.model_type].__dict__[args.model_name](out_dim=num_classes, ReBN=args.ReBN)
-    pretrained_model = load_model(saved_models_folder + '/class.pth')
+    load_model(pretrained_model, saved_models_folder + '/class.pth')
     print('Model')
     print(pretrained_model)
 
