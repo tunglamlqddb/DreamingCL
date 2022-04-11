@@ -31,6 +31,8 @@ def create_args():
     parser.add_argument('--repeat_id', type=int, default=1)
     parser.add_argument('--train_aug', dest='train_aug', default=False, action='store_true',
                         help="Allow data augmentation during training")
+    parser.add_argument('--validation', default=False, action='store_true', help='Evaluate on fold of training dataset rather than testing data')
+
     
     parser.add_argument('--dataset', type=str, default='MNIST', help="CIFAR10|MNIST")
     parser.add_argument('--optimizer', type=str, default='SGD', help="SGD|Adam|RMSprop|amsgrad|Adadelta|Adagrad|Adamax ...")
