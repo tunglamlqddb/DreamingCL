@@ -239,8 +239,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, drop_last=True, num_workers=2)
     test_dataset.load_dataset(args.task_id-1, train=False)
     test_loader  = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, drop_last=False, num_workers=2)
-    avg_train_time = learn_batch(args, model, generator, pretrained_model, train_loader, train_dataset, test_loader)
-
+    avg_train_time = learn_batch(args, model, generator, pretrained_model, train_loader, test_loader)
     
 
 
