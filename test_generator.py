@@ -62,7 +62,7 @@ def accumulate_acc(output, target, task, meter, topk):
     meter.update(accuracy(output, target, topk), len(target))
     return meter
 
-def learn_batch(self, args, model, generator, pretrained_model, train_loader, val_loader=None):
+def learn_batch(args, model, generator, pretrained_model, train_loader, val_loader=None):
     # trains
     # Reset optimizer before learning each task 
     optimizer_arg = {'params':model.parameters(),
@@ -81,7 +81,7 @@ def learn_batch(self, args, model, generator, pretrained_model, train_loader, va
     batch_time = AverageMeter()
     batch_timer = Timer()
     class_idx = np.arange(20*args.task_id)
-    for epoch in range(self.config['schedule'][-1]):
+    for epoch in range(args.schedule[-1]):
         
         if epoch > 0: scheduler.step()
         for param_group in optimizer.param_groups:
@@ -119,8 +119,8 @@ def learn_batch(self, args, model, generator, pretrained_model, train_loader, va
             batch_timer.tic()
 
         # eval update
-        self.log('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
-        self.log(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
+        print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
+        print(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
 
         # Evaluate the performance of current task
         if val_loader is not None:
@@ -137,7 +137,7 @@ def learn_batch(self, args, model, generator, pretrained_model, train_loader, va
     except:
         return None
 
-def validation(self, dataloader, model, task_in = None,  verbal = True):
+def validation(dataloader, model, task_in = None,  verbal = True):
 
     # This function doesn't distinguish tasks.
     batch_timer = Timer()
@@ -165,12 +165,12 @@ def validation(self, dataloader, model, task_in = None,  verbal = True):
             
             if len(target) > 1:
                 output = model.forward(input)[:, task_in]
-                acc = accumulate_acc(output, target-task_in[0], task, acc, topk=(self.top_k,))
+                acc = accumulate_acc(output, target-task_in[0], task, acc, topk=(1,))
         
     model.train(orig_mode)
 
     if verbal:
-        self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
+        print(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
                 .format(acc=acc, time=batch_timer.toc()))
     return acc.avg
 
