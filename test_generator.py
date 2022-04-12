@@ -12,7 +12,7 @@ from utils.metric import accuracy, AverageMeter, Timer
 '''
 python -u test_generator.py --gpuid 0 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
                             --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
-                            --schedule 30 50 80 100 --schedule_type decay --batch_size 128 \
+                            --schedule 30 50 90 100 --schedule_type decay --batch_size 128 \
                             --seed 0 --train_aug --model_type resnet --model_name resnet32
 '''
 
@@ -122,7 +122,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
         # eval update
         print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
         print(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
-        val_losses.append(losses.item())
+        val_losses.append(losses)
         # Evaluate the performance of current task
         if val_loader is not None:
             validation(val_loader, model)
