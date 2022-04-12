@@ -152,7 +152,8 @@ class Teacher(nn.Module):
             inputs_smooth = self.smoothing(F.pad(inputs, (2, 2, 2, 2), mode='reflect'))
             loss_var = self.mse_loss(inputs, inputs_smooth).mean()
             loss = loss + self.di_var_scale * loss_var
-
+            if self.config['max_task'] > -1 and epoch%100==0: 
+                print('Epoch: ', epoch, ' -- Loss: ', loss.item())
             # backward pass
             loss.backward()
 

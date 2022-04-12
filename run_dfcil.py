@@ -169,7 +169,7 @@ if __name__ == '__main__':
                     avg_metrics[mkey]['pt-local'] = np.zeros((max_task,max_task,args.repeat))
 
         # train model
-        avg_metrics = trainer.t rain(avg_metrics)  
+        avg_metrics = trainer.train(avg_metrics)  
 
         # evaluate model
         avg_metrics = trainer.evaluate(avg_metrics)    
