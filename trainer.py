@@ -115,6 +115,7 @@ class Trainer:
                         'deep_inv_params': args.deep_inv_params,
                         'tasks': self.tasks_logits,
                         'top_k': self.top_k,
+                        'max_task': args.max_task,
                         'ReBN': args.ReBN,
                         }
         self.learner_type, self.learner_name = args.learner_type, args.learner_name
