@@ -73,6 +73,10 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
     optimizer = torch.optim.__dict__[args.optimizer](**optimizer_arg)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.schedule, gamma=0.1)
 
+    # Compare to acc of pretrained_model
+    print('Pretrained model got', end=' ')
+    haha = validation(val_loader, pretrained_model)
+
     # Evaluate the performance of current task
     print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=0,total=args.schedule[-1]))
     if val_loader is not None:
@@ -137,8 +141,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
             
     model.eval()
 
-    # Compare to acc of pretrained_model
-    validation(val_loader, pretrained_model)
+    print('Pretrained model got: ', haha)    
 
     try:
         return batch_time.avg, val_losses, val_accs
