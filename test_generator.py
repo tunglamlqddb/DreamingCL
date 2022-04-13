@@ -231,12 +231,12 @@ if __name__ == '__main__':
     saved_models_folder = args.log_dir + '/' + method + '/models/repeat-' + str(args.seed+1) + '/task-' + str(args.task_id) 
     saved_path_loss = 'outputs/loss-' + method + '-' + args.dataset + '-' + str(args.first_split_size) + '-' + str(args.other_split_size) + '-' + str(seed) + '-' + args.model_name + '.txt'
     saved_path_acc  = 'outputs/acc-' + method + '-' + args.dataset +  '-' + str(args.first_split_size) + '-' + str(args.other_split_size) + '-' + str(seed) + '-' + args.model_name + '.txt'
-    
+    print('Models loaded from ', saved_models_folder)    
 
     # Generator
     generator = models.__dict__[args.gen_model_type].__dict__[args.gen_model_name]()
     load_model(generator,  saved_models_folder + '/generator.pth')
-    print('Generator: ', sum(p.numel() for p in generator.parameters()))
+    print('Generator:', sum(p.numel() for p in generator.parameters()))
     print(generator)
 
     # Pretrained model
