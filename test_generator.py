@@ -16,6 +16,14 @@ python -u test_generator.py --gpuid 1 --gen_model_type generator --gen_model_nam
                             --seed 31 --train_aug --model_type resnet --model_name resnet32  \
                             --log_dir '../outputs/DreamingCL/DFCIL-fourtask/debug-max-task-1/CIFAR100' \
                             --first_split_size 25 --other_split_size 25
+
+python -u test_generator.py --gpuid 1 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 \
+                            --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002  \
+                            --schedule 30 60 100 --schedule_type decay --batch_size 128  \
+                            --seed 31 --train_aug --model_type resnet --model_name resnet32   \
+                            --log_dir '../outputs/DreamingCL/DFCIL-twotask/debug-max-task-1/CIFAR100'  \
+                            --first_split_size 50 --other_split_size 50 --ReBN
+
 '''
 
 def create_args():    
@@ -130,10 +138,11 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
         print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
         print(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
         val_losses.append(losses.avg)
-        val_accs.append(acc.avg)
         # Evaluate the performance of current task
         if val_loader is not None:
-            validation(val_loader, model)
+            val_acc = validation(val_loader, model)
+            val_accs.append(val_acc)
+
 
         # reset
         losses = AverageMeter()
