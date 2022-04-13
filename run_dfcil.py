@@ -69,6 +69,8 @@ def create_args():
     # My Args
     parser.add_argument('--ReBN', default=False, action='store_true',
                         help="Replace norm BN with ReBN")
+    parser.add_argument('--my_seed', type=int, default=0)
+   
 
     return parser
 
@@ -143,7 +145,7 @@ if __name__ == '__main__':
             start_r = 0
 
     # run trials
-    for r in range(start_r, args.repeat):
+    for r in range(start_r + args.my_seed, args.repeat + args.my_seed):
 
         print('************************************')
         print('* STARTING TRIAL ' + str(r+1))
