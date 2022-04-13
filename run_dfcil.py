@@ -145,14 +145,14 @@ if __name__ == '__main__':
             start_r = 0
 
     # run trials
-    for r in range(start_r + args.my_seed, args.repeat + args.my_seed):
+    for r in range(start_r, args.repeat):
 
         print('************************************')
         print('* STARTING TRIAL ' + str(r+1))
         print('************************************')
 
         # set random seeds
-        seed = r
+        seed = r + args.my_seed
         random.seed(seed)
         np.random.seed(seed)
         torch.manual_seed(seed)

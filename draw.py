@@ -3,7 +3,7 @@ import matplotlib.ticker as ticker
 import matplotlib.pyplot as plt
 import numpy as np
 
-res_path = 'outputs/...'
+res_path = 'outputs'
 
 def get_data(path):
     with open(path,'r') as f:
@@ -12,7 +12,7 @@ def get_data(path):
     return data
 
 def line_plot(res):
-    x = np.arange(res[0])
+    x = np.arange(res[0].shape[0])
 
     plt.plot(x, res[0], label = "ReBN")
     plt.plot(x, res[1], label = "No-ReBN")
@@ -22,7 +22,7 @@ def line_plot(res):
     plt.legend()
     plt.show()
 
-paths = [res_path+'/rebn', res_path+'/no-rebn']
+paths = [res_path+'/rebn.txt', res_path+'/no-rebn.txt']
 res = []
 for path in paths:
     res.append(get_data(path))

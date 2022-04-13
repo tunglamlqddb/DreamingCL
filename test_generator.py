@@ -83,6 +83,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
     batch_timer = Timer()
     class_idx = np.arange(20*args.task_id)
     val_losses = []
+    val_accs = []
     for epoch in range(args.schedule[-1]):
         
         if epoch > 0: scheduler.step()
@@ -124,6 +125,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
         print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
         print(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
         val_losses.append(losses.avg)
+        val_accs.append(acc.avg)
         # Evaluate the performance of current task
         if val_loader is not None:
             validation(val_loader, model)
@@ -138,7 +140,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
     validation(val_loader, pretrained_model)
 
     try:
-        return batch_time.avg, val_losses
+        return batch_time.avg, val_losses, val_accs
     except:
         return None
 
@@ -223,7 +225,9 @@ if __name__ == '__main__':
     if args.ReBN: method = 'abd-rebn'
     else: method = 'abd-no-rebn'
     saved_models_folder = args.log_dir + '/' + method + '/models/repeat-' + str(args.repeat_id) + '/task-' + str(args.task_id) 
-    saved_path = args.log_dir + '/' + method + '/test_gen_output.txt'
+    saved_path_loss = args.log_dir + '/' + method + '/test_gen_output_loss.txt'
+    saved_path_acc = args.log_dir + '/' + method + '/test_gen_output_acc.txt'
+    
 
     # Generator
     generator = models.__dict__[args.gen_model_type].__dict__[args.gen_model_name]()
@@ -246,11 +250,13 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, drop_last=True, num_workers=2)
     test_dataset.load_dataset(args.task_id-1, train=False)
     test_loader  = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, drop_last=False, num_workers=2)
-    avg_train_time, val_losses = learn_batch(args, model, generator, pretrained_model, train_loader, test_loader)
+    avg_train_time, val_losses, val_accs = learn_batch(args, model, generator, pretrained_model, train_loader, test_loader)
 
     # write to file
-    with open(saved_path, 'w') as f:
+    with open(saved_path_loss, 'w') as f:
         f.write("\n".join([str(i) for i in val_losses]))
+    with open(saved_path_acc, 'w') as f:
+        f.write("\n".join([str(i) for i in val_accs]))
 
     
 
