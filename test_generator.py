@@ -94,7 +94,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
     acc = AverageMeter()
     batch_time = AverageMeter()
     batch_timer = Timer()
-    class_idx = np.arange(20*args.task_id)
+    class_idx = np.arange(args.first_split_size*args.task_id)
     val_losses = []
     val_accs = []
     for epoch in range(args.schedule[-1]):
@@ -118,7 +118,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
             _, y_replay = torch.max(y_hat, dim=1)
             
             # model update
-            logits = model.forward(x_replay)[:, :20*args.task_id]
+            logits = model.forward(x_replay)[:, :args.first_split_size*args.task_id]
             loss = nn.CrossEntropyLoss()(logits, y_replay.long())
             optimizer.zero_grad()
             loss.backward()
