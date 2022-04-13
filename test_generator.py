@@ -12,7 +12,7 @@ from utils.metric import accuracy, AverageMeter, Timer
 '''
 python -u test_generator.py --gpuid 1 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 \
                             --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
-                            --schedule 30 50 90 100 --schedule_type decay --batch_size 128 \
+                            --schedule 30 60 95 100 --schedule_type decay --batch_size 128 \
                             --seed 31 --train_aug --model_type resnet --model_name resnet32  \
                             --log_dir '../outputs/DreamingCL/DFCIL-fourtask/debug-max-task-1/CIFAR100' \
                             --first_split_size 25 --other_split_size 25
@@ -163,7 +163,7 @@ def validation(dataloader, model, task_in = None,  verbal = True):
             input = input.cuda()
             target = target.cuda()
         if task_in is None:
-            output = model.forward(input)[:, :20*args.task_id]
+            output = model.forward(input)[:, :args.first_split_size*args.task_id]
             acc = accumulate_acc(output, target, task, acc, topk=(1,))
         else:
             mask = target >= task_in[0]
