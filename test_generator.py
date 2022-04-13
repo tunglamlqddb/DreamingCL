@@ -10,10 +10,10 @@ from torch.utils.data import DataLoader
 from utils.metric import accuracy, AverageMeter, Timer
 
 '''
-python -u test_generator.py --gpuid 0 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
+python -u test_generator.py --gpuid 1 --gen_model_type generator --gen_model_name CIFAR_GEN --task_id 1 --repeat_id 1 \
                             --dataset CIFAR100 --optimizer SGD --lr 0.1 --momentum 0.9 --weight_decay 0.0002 \
                             --schedule 30 50 90 100 --schedule_type decay --batch_size 128 \
-                            --seed 0 --train_aug --model_type resnet --model_name resnet32
+                            --seed 0 --train_aug --model_type resnet --model_name resnet32 --ReBN
 '''
 
 def create_args():    
@@ -249,7 +249,7 @@ if __name__ == '__main__':
 
     # write to file
     with open(saved_path, 'w') as f:
-        f.write("\n".join(val_losses))
+        f.write("\n".join([str(i) for i in val_losses]))
 
     
 
