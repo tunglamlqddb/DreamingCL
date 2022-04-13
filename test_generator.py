@@ -122,7 +122,7 @@ def learn_batch(args, model, generator, pretrained_model, train_loader, val_load
         # eval update
         print('Epoch:{epoch:.0f}/{total:.0f}'.format(epoch=epoch+1,total=args.schedule[-1]))
         print(' * Loss {loss.avg:.3f} | Train Acc {acc.avg:.3f}'.format(loss=losses,acc=acc))
-        val_losses.append(losses)
+        val_losses.append(losses.avg)
         # Evaluate the performance of current task
         if val_loader is not None:
             validation(val_loader, model)
